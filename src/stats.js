@@ -13,8 +13,6 @@ export function renderStats(leaderboard) {
   const total = leaderboard.length;
   const highest = Math.max(...leaderboard.map((u) => u.score));
   const avg = Math.round(leaderboard.reduce((s, u) => s + u.score, 0) / total);
-  
-  console.log({ total, highest, avg });
 
   totalUsersEl.textContent = total;
   highestScoreEl.textContent = highest;

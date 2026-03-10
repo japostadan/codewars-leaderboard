@@ -9,10 +9,12 @@ const leaderboardBody = document.getElementById("leaderboard-body");
 const errorBanner = document.getElementById("error-banner");
 const usernameSearch = document.getElementById("username-search");
 const languageFilter = document.getElementById("language-filter");
+const leaderboardTitle = document.getElementById("leaderboard-headers");
 
 let usersData = [];
+let currentSort = { key: "score", asc: false };
 
-// ==================== Fetch Users ====================
+// ==================== Fetch Users & Initialize ====================
 if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
   addUsersForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -65,8 +67,19 @@ function renderLeaderboard(language, filter = "") {
     );
   if (!leaderboard.length) {
     leaderboardBody.innerHTML = `<tr><td colspan="6" class="empty-state">No data available.</td></tr>`;
+    updateStats([]);
     return;
   }
+
+    leaderboard.sort((a, b) => {
+      const valA = a[currentSort.key] ?? "";
+      const valB = b[currentSort.key] ?? "";
+      if (typeof valA === "number")
+        return currentSort.asc ? valA - valB : valB - valA;
+      return currentSort.asc
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA));
+    });
 
   leaderboard.forEach((user, index) => {
     const row = document.createElement("tr");
@@ -90,3 +103,37 @@ function renderLeaderboard(language, filter = "") {
 
   renderStats(leaderboard);
 }
+
+leaderboardTitle.querySelectorAll("th").forEach((header) => {
+  const sortIcon = document.createElement("span");
+  sortIcon.classList.add("sort-icon");
+  header.appendChild(sortIcon);
+
+  header.addEventListener("click", () => {
+    const key = header.dataset.sort;
+    if (!key) return;
+
+    if (currentSort.key === key) {
+      currentSort.asc = !currentSort.asc;
+    } else {
+      currentSort.key = key;
+      currentSort.asc = true;
+    }
+
+    renderLeaderboard(
+      languageFilter.value,
+      usernameSearch.value.trim().toLowerCase(),
+    );
+
+    leaderboardTitle.querySelectorAll("th").forEach((th) => {
+      th.classList.remove("active-sort", "sort-desc");
+      const icon = th.querySelector(".sort-icon");
+      if (icon) icon.textContent = "";
+    });
+
+    header.classList.add("active-sort");
+    if (!currentSort.asc) header.classList.add("sort-desc");
+
+    sortIcon.textContent = currentSort.asc ? "▲" : "▼";
+  });
+});
