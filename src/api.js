@@ -6,13 +6,27 @@
  */
 
 export async function fetchUserData(username) {
-  const response = await fetch(
-    `https://www.codewars.com/api/v1/users/${username}`,
-  );
-  const userData = await response.json();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-  if (!response.ok) {
-    throw new Error(`User ${username} not found`);
+  try {
+    const response = await fetch(
+      `https://www.codewars.com/api/v1/users/${username}`,
+      { signal: controller.signal }
+    );
+
+    if (!response.ok) {
+      throw new Error(`User ${username} not found`);
+    }
+
+    const userData = await response.json();
+    return userData;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      throw new Error(`Request timeout for user ${username}`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return userData;
 }
