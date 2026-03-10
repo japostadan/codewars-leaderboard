@@ -1,6 +1,7 @@
 import { fetchUserData } from "./api.js";
 import { getUserLanguages, selectUserLanguages } from "./language.js";
 import { renderLanguageList } from "./dropdown.js";
+import { renderStats } from "./stats.js";
 
 const addUsersForm = document.getElementById("fetch-users-form");
 const usernameInput = document.getElementById("username-input");
@@ -86,4 +87,6 @@ function renderLeaderboard(language, filter = "") {
 
     leaderboardBody.appendChild(row);
   });
+
+  renderStats(leaderboard);
 }
