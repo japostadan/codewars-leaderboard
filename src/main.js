@@ -87,12 +87,8 @@ async function showUserKatas(username) {
   }
 }
 
-function getActiveFilterText() {
-  return usernameSearch?.value.trim().toLowerCase() || "";
-}
-
 function renderActiveLeaderboard() {
-  renderLeaderboard(languageFilter?.value || "overall", getActiveFilterText());
+  renderLeaderboard(languageFilter?.value || "overall", usernameSearch?.value.trim().toLowerCase() || "");
 }
 
 function showBanner(message, kind = "error") {

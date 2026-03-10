@@ -1,9 +1,8 @@
 // ==================== getUserLanguages ====================
 export function getUserLanguages(users) {
-  const userList = Array.isArray(users) ? users : [users];
   const languagesSet = new Set();
 
-  userList.forEach((user) => {
+  users.forEach((user) => {
     if (user.ranks && user.ranks.languages) {
       Object.keys(user.ranks.languages).forEach((language) =>
         languagesSet.add(language),

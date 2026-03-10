@@ -48,9 +48,9 @@ export async function fetchUserData(username) {
  * @param username : string
  * @returns list of completed code challenges
  */
-export async function fetchCompletedKatas(username, page = 0) {
+export async function fetchCompletedKatas(username) {
   const payload = await fetchJsonWithTimeout(
-    `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed?page=${page}`,
+    `https://www.codewars.com/api/v1/users/${username}/code-challenges/completed?page=0`,
     `Completed katas for ${username}`,
   );
 

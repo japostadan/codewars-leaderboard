@@ -1,3 +1,5 @@
+const MAX_DISPLAYED_LANGUAGES = 3;
+
 function formatDate(value) {
   if (!value) return "Unknown date";
 
@@ -36,7 +38,7 @@ export function renderKataList(containerEl, katas) {
       const escapedId = escapeHtml(kata.id || "");
       const completedAt = formatDate(kata.completedAt);
       const languages = Array.isArray(kata.completedLanguages)
-        ? kata.completedLanguages.slice(0, 3)
+        ? kata.completedLanguages.slice(0, MAX_DISPLAYED_LANGUAGES)
         : [];
 
       const languageTags = languages
