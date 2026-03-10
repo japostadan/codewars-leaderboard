@@ -11,6 +11,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="preconnect" href="https://unpkg.com" />
   </head>
   <body>
     <div class="app">
@@ -18,7 +19,7 @@
       <aside class="sidebar">
         <h2 class="logo">⚔ Codewars</h2>
         <nav>
-          <a id="nav-leaderboard" class="active" href="#">Leaderboard</a>
+          <a id="nav-leaderboard" class="active" href="#"><i data-lucide="trophy"></i>Leaderboard</a>
         </nav>
       </aside>
 
@@ -27,22 +28,31 @@
         <!-- Topbar -->
         <header class="topbar">
           <h1>Leaderboard Dashboard</h1>
-          <button id="theme-toggle">🌑️</button>
+          <button id="theme-toggle" aria-label="Toggle theme"><i data-lucide="moon"></i></button>
         </header>
 
         <section id="leaderboard-view" class="content-view">
           <!-- Stats Cards -->
           <section class="stats">
             <div class="card">
-              <h3>Total Users</h3>
+              <div class="card-header">
+                <span class="card-icon-wrap icon-blue"><i data-lucide="users"></i></span>
+                <h3>Total Users</h3>
+              </div>
               <p id="total-users">0</p>
             </div>
             <div class="card">
-              <h3>Highest Score</h3>
+              <div class="card-header">
+                <span class="card-icon-wrap icon-rose"><i data-lucide="flame"></i></span>
+                <h3>Highest Score</h3>
+              </div>
               <p id="highest-score">0</p>
             </div>
             <div class="card">
-              <h3>Average Score</h3>
+              <div class="card-header">
+                <span class="card-icon-wrap icon-amber"><i data-lucide="bar-chart-2"></i></span>
+                <h3>Average Score</h3>
+              </div>
               <p id="average-score">0</p>
             </div>
           </section>
@@ -50,22 +60,33 @@
           <!-- Controls -->
           <section class="controls">
             <form id="fetch-users-form">
-              <input
-                id="username-input"
-                type="text"
-                required
-                placeholder="Enter usernames (comma separated)"
-              />
-              <button class="fetch-btn">Fetch</button>
+              <div class="input-wrapper">
+                <i data-lucide="at-sign" class="input-icon"></i>
+                <input
+                  id="username-input"
+                  type="text"
+                  required
+                  placeholder="Enter usernames (comma separated)"
+                  class="has-icon"
+                />
+              </div>
+              <button class="fetch-btn"><i data-lucide="search"></i>Fetch</button>
             </form>
 
-            <select id="language-filter"></select>
+            <div class="input-wrapper">
+              <i data-lucide="filter" class="input-icon"></i>
+              <select id="language-filter" class="has-icon"></select>
+            </div>
 
-            <input
-              type="text"
-              id="username-search"
-              placeholder="Search username..."
-            />
+            <div class="input-wrapper">
+              <i data-lucide="search" class="input-icon"></i>
+              <input
+                type="text"
+                id="username-search"
+                placeholder="Search username..."
+                class="has-icon"
+              />
+            </div>
           </section>
 
           <div id="error-banner" role="alert"></div>
@@ -76,11 +97,11 @@
               <thead>
                 <tr id="leaderboard-headers" class="leaderboard-header-row">
                   <th data-sort="rank">#</th>
-                  <th data-sort="username">User</th>
-                  <th data-sort="honor">Honor</th>
-                  <th data-sort="clan">Clan</th>
-                  <th data-sort="score">Score</th>
-                  <th data-sort="leaderboardPosition">Overall Rank</th>
+                  <th data-sort="username"><span class="th-label"><i data-lucide="user"></i>User</span></th>
+                  <th data-sort="honor"><span class="th-label"><i data-lucide="star"></i>Honor</span></th>
+                  <th data-sort="clan"><span class="th-label"><i data-lucide="shield"></i>Clan</span></th>
+                  <th data-sort="score"><span class="th-label"><i data-lucide="zap"></i>Score</span></th>
+                  <th data-sort="leaderboardPosition"><span class="th-label"><i data-lucide="award"></i>Overall Rank</span></th>
                 </tr>
               </thead>
               <tbody id="leaderboard-body"></tbody>
@@ -93,7 +114,7 @@
       <aside id="kata-drawer" class="kata-drawer" aria-hidden="true">
         <header class="kata-drawer-header">
           <div>
-            <p class="kata-subtitle">Completed Katas</p>
+            <p class="kata-subtitle"><i data-lucide="scroll-text"></i>Completed Katas</p>
             <h2 id="kata-user-title">—</h2>
           </div>
           <button id="kata-close-btn" class="kata-close-btn" aria-label="Close kata panel">✕</button>
@@ -106,6 +127,7 @@
 
     <div id="kata-overlay" class="kata-overlay"></div>
 
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>

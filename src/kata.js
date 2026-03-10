@@ -51,7 +51,7 @@ export function renderKataList(containerEl, katas) {
         <article class="kata-item">
           <a class="kata-name" href="https://www.codewars.com/kata/${escapedId}" target="_blank" rel="noopener noreferrer">${escapedName}</a>
           <div class="kata-meta">
-            <span>${escapeHtml(completedAt)}</span>
+            <span class="kata-date"><i data-lucide="calendar"></i>${escapeHtml(completedAt)}</span>
             ${languageTags}
           </div>
         </article>
@@ -60,5 +60,6 @@ export function renderKataList(containerEl, katas) {
     .join("");
 
   containerEl.innerHTML = items;
+  window.lucide?.createIcons();
 }
 
