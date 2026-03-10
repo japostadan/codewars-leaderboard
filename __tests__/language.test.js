@@ -98,6 +98,7 @@ describe("getLeaderboard", () => {
       clan: "Clan",
       score: 50,
       rankName: "2 kyu",
+      honor: null,
       leaderboardPosition: 3,
     });
   });
