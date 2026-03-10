@@ -1,13 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Codewars leaderboard</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codewars Leaderboard Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h2 class="logo">⚔ Codewars</h2>
+        <nav>
+          <a class="active">Leaderboard</a>
+          <a class="katas">Katas</a>
+        </nav>
+      </aside>
 
-<script src="index.mjs" type="module"></script>
+      <!-- Main -->
+      <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <h1>Leaderboard Dashboard</h1>
+          <button id="theme-toggle">🌑️</button>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats">
+          <div class="card">
+            <h3>Total Users</h3>
+            <p id="total-users">0</p>
+          </div>
+          <div class="card">
+            <h3>Highest Score</h3>
+            <p id="highest-score">0</p>
+          </div>
+          <div class="card">
+            <h3>Average Score</h3>
+            <p id="average-score">0</p>
+          </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="controls">
+          <form id="fetch-users-form">
+            <input
+              id="username-input"
+              type="text"
+              required
+              placeholder="Enter usernames (comma separated)"
+            />
+            <button class="fetch-btn">Fetch</button>
+          </form>
+
+          <select id="language-filter"></select>
+
+          <input
+            type="text"
+            id="username-search"
+            placeholder="Search username..."
+          />
+        </section>
+
+        <div id="error-banner" role="alert"></div>
+
+        <!-- Table -->
+        <section class="table-container">
+          <table>
+            <thead>
+              <tr id="leaderboard-headers" class="leaderboard-header-row">
+                <th data-sort="rank">#</th>
+                <th data-sort="username">User</th>
+                <th data-sort="clan">Clan</th>
+                <th data-sort="score">Score</th>
+                <th data-sort="leaderboardPosition">Overall Rank</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
 </html>

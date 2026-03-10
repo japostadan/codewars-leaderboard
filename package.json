@@ -1,8 +1,21 @@
 {
   "scripts": {
-    "test": "node --test"
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
   },
   "devDependencies": {
-    "nock": "^14.0.0-beta.15"
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "nock": "^14.0.11"
+  },
+  "name": "project-codewars-leaderboard",
+  "version": "1.0.0",
+  "description": "Codewars provides [an API](https://dev.codewars.com/) that can be used to look up an individual user's rank and score.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node"
   }
 }
