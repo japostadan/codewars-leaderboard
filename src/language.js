@@ -11,7 +11,6 @@ export function getUserLanguages(users) {
     }
   });
 
-  console.log(languagesSet);
   return ["overall", ...Array.from(languagesSet)];
 }
 
