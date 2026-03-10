@@ -212,7 +212,11 @@ document.addEventListener("DOMContentLoaded", () => {
     renderLeaderboard("overall");
   }
   const savedTheme = localStorage.getItem("cw-theme");
-  if (savedTheme === "light") document.body.classList.add("light");
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+    if (themeToggle) themeToggle.innerHTML = '<i data-lucide="sun"></i>';
+  }
+  window.lucide?.createIcons();
 });
 
 // ==================== Filter & Search Listeners ====================
@@ -307,7 +311,8 @@ leaderboardTitle.querySelectorAll("th").forEach((header) => {
 // ==================== Theme Toggle ====================
 themeToggle.addEventListener("click", () => {
   const isLightMode = document.body.classList.toggle("light");
-  themeToggle.textContent = isLightMode ? "🌑️" : "☀️";
+  themeToggle.innerHTML = isLightMode ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+  window.lucide?.createIcons();
   localStorage.setItem("cw-theme", isLightMode ? "light" : "dark");
 });
 
