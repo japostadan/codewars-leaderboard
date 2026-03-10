@@ -1,4 +1,5 @@
 import nock from "nock";
+import { getUserData } from "../src/api";
 
 describe("fetch reuests to API", () => {
   afterEach(() => {
@@ -15,7 +16,16 @@ describe("fetch reuests to API", () => {
         languages: {},
       },
     };
+
+
+  const scope = nock("https://www.codewars.com")
+      .get("/api/v1/users/testuser")
+      .reply(200, mockGetUserResponse);
+
+    const result = await getUserData("testuser");
+
+    expect(result.username).toBe("testuser");
+    expect(result.clan).toBe("testclan");
+    expect(scope.isDone()).toBe(true);
   });
-
-
 });
