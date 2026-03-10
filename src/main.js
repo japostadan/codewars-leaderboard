@@ -1,22 +1,11 @@
 import { fetchUserData } from "./api.js";
-import { getUserLanguages } from "./language.js";
+import { getUserLanguages, selectUserLanguages } from "./language.js";
+import { renderLanguageList } from "./dropdown.js";
 
-const hasDocument = typeof document !== "undefined";
-const addUsersForm = hasDocument
-  ? document.getElementById("fetch-users-form")
-  : null;
-const usernameInput = hasDocument
-  ? document.getElementById("username-input")
-  : null;
-const errorBanner = hasDocument
-  ? document.getElementById("error-banner")
-  : null;
-const leaderboardBody = hasDocument
-  ? document.getElementById("leaderboard-body")
-  : null;
-const languageFilter = hasDocument
-  ? document.getElementById("language-filter")
-  : null;
+const addUsersForm = document.getElementById("fetch-users-form");
+const usernameInput = document.getElementById("username-input");
+const leaderboardBody = document.getElementById("leaderboard-body");
+const errorBanner = document.getElementById("error-banner");
 
 let usersData = [];
 
@@ -37,7 +26,11 @@ if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
     try {
       usersData = await Promise.all(usernames.map(fetchUserData));
       const userLanguages = getUserLanguages(usersData);
+      renderLanguageList(userLanguages);
       console.log("User Languages:", userLanguages);
+
+      renderLanguageList(userLanguages);
+      renderLeaderboard("overall");
     } catch (err) {
       leaderboardBody.innerHTML = "";
       errorBanner.textContent = err.message || "Something went wrong";
@@ -46,3 +39,38 @@ if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
   });
 }
 
+// ==================== Render Leaderboard ====================
+function renderLeaderboard(language, filter = "") {
+  leaderboardBody.innerHTML = "";
+  let leaderboard = selectUserLanguages(usersData, language);
+
+  if (filter)
+    leaderboard = leaderboard.filter((u) =>
+      u.username.toLowerCase().includes(filter),
+    );
+  if (!leaderboard.length) {
+    leaderboardBody.innerHTML = `<tr><td colspan="6" class="empty-state">No data available.</td></tr>`;
+    return;
+  }
+
+
+  leaderboard.forEach((user, index) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td class="rank">${index + 1}</td>
+      <td class="player-cell">
+        <span class="kyu-badge">${user.rankName}</span>
+        <span style="color:#000">●</span>
+        <span>${user.username}</span>
+      </td>
+      <td>${user.clan || ""}</td>
+      <td>
+        ${user.score}
+      </td>
+      <td>${user.leaderboardPosition || "N/A"}</td>
+    `;
+
+    leaderboardBody.appendChild(row);
+  });
+}
