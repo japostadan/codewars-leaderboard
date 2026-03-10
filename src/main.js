@@ -1,9 +1,10 @@
-import { fetchUserData } from "./api.js";
+import { fetchUserData, fetchCompletedKatas } from "./api.js";
 import { getUserLanguages, selectUserLanguages } from "./language.js";
 import { renderLanguageList } from "./dropdown.js";
 import { renderStats } from "./stats.js";
 import { compareLeaderboardValues } from "./sort.js";
 import { saveCache, loadCache } from "./cache.js";
+import { renderKataStatus, renderKataList } from "./kata.js";
 import {
   debounce,
   parseUsernames,
@@ -22,10 +23,69 @@ const languageFilter = document.getElementById("language-filter");
 const leaderboardTitle = document.getElementById("leaderboard-headers");
 const themeToggle = document.getElementById("theme-toggle");
 const fetchBtn = addUsersForm?.querySelector(".fetch-btn");
+const kataDrawer = document.getElementById("kata-drawer");
+const kataOverlay = document.getElementById("kata-overlay");
+const kataCloseBtn = document.getElementById("kata-close-btn");
+const kataUserTitle = document.getElementById("kata-user-title");
+const kataContent = document.getElementById("kata-content");
 
 let usersData = [];
 let currentSort = { key: "score", asc: false };
 let isFetching = false;
+let activeKataUsername = null;
+const kataCache = new Map();
+
+function highlightActiveKataRow() {
+  leaderboardBody?.querySelectorAll(".leaderboard-row").forEach((row) => {
+    row.classList.toggle(
+      "active-kata-row",
+      row.dataset.username === activeKataUsername,
+    );
+  });
+}
+
+function openKataDrawer() {
+  kataDrawer?.classList.add("open");
+  kataOverlay?.classList.add("open");
+  kataDrawer?.setAttribute("aria-hidden", "false");
+}
+
+function closeKataDrawer() {
+  kataDrawer?.classList.remove("open");
+  kataOverlay?.classList.remove("open");
+  kataDrawer?.setAttribute("aria-hidden", "true");
+
+  activeKataUsername = null;
+  highlightActiveKataRow();
+}
+
+async function showUserKatas(username) {
+  if (!kataContent || !kataUserTitle) return;
+
+  activeKataUsername = username;
+  highlightActiveKataRow();
+
+  kataUserTitle.textContent = username;
+  openKataDrawer();
+
+  if (kataCache.has(username)) {
+    renderKataList(kataContent, kataCache.get(username));
+    return;
+  }
+
+  renderKataStatus(kataContent, "Loading completed katas...");
+
+  try {
+    const katas = await fetchCompletedKatas(username);
+    kataCache.set(username, katas);
+    renderKataList(kataContent, katas);
+  } catch (error) {
+    renderKataStatus(
+      kataContent,
+      error.message || "Failed to load completed katas.",
+    );
+  }
+}
 
 function getActiveFilterText() {
   return usernameSearch?.value.trim().toLowerCase() || "";
@@ -39,23 +99,14 @@ function showBanner(message, kind = "error") {
   if (!errorBanner) return;
 
   errorBanner.textContent = message;
-
-  if (kind === "warning") {
-    errorBanner.style.backgroundColor = "#fef3c7";
-    errorBanner.style.color = "#92400e";
-    return;
-  }
-
-  errorBanner.style.backgroundColor = "#fee2e2";
-  errorBanner.style.color = "#991b1b";
+  errorBanner.classList.toggle("warning", kind === "warning");
 }
 
 function clearBanner() {
   if (!errorBanner) return;
 
   errorBanner.textContent = "";
-  errorBanner.style.backgroundColor = "";
-  errorBanner.style.color = "";
+  errorBanner.classList.remove("warning");
 }
 
 function renderEmptyState() {
@@ -70,7 +121,11 @@ function renderLoadingState() {
 
 function createPlayerRow(user, index) {
   const row = document.createElement("tr");
+  row.classList.add("leaderboard-row");
+  row.dataset.username = user.username;
 
+  if (user.username === activeKataUsername)
+    row.classList.add("active-kata-row");
   if (index === 0) row.classList.add("rank-1");
   if (index === 1) row.classList.add("rank-2");
   if (index === 2) row.classList.add("rank-3");
@@ -95,6 +150,10 @@ function createPlayerRow(user, index) {
   avatar.onerror = () => {
     avatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=1a1a2e&color=b0b0c0&size=40`;
   };
+
+  row.addEventListener("click", () => {
+    showUserKatas(user.username);
+  });
 
   return row;
 }
@@ -173,6 +232,19 @@ if (usernameSearch) {
   usernameSearch.addEventListener("input", debouncedRender);
 }
 
+// ==================== Kata Drawer Listeners ====================
+if (kataCloseBtn) {
+  kataCloseBtn.addEventListener("click", closeKataDrawer);
+}
+
+if (kataOverlay) {
+  kataOverlay.addEventListener("click", closeKataDrawer);
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeKataDrawer();
+});
+
 // ==================== Fetch Users & Initialize ====================
 if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
   addUsersForm.addEventListener("submit", handleSubmit);
@@ -242,3 +314,4 @@ themeToggle.addEventListener("click", () => {
   themeToggle.textContent = isLightMode ? "🌑️" : "☀️";
   localStorage.setItem("cw-theme", isLightMode ? "light" : "dark");
 });
+

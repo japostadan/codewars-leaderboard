@@ -18,8 +18,7 @@
       <aside class="sidebar">
         <h2 class="logo">⚔ Codewars</h2>
         <nav>
-          <a class="active">Leaderboard</a>
-          <a class="katas">Katas</a>
+          <a id="nav-leaderboard" class="active" href="#">Leaderboard</a>
         </nav>
       </aside>
 
@@ -31,63 +30,83 @@
           <button id="theme-toggle">🌑️</button>
         </header>
 
-        <!-- Stats Cards -->
-        <section class="stats">
-          <div class="card">
-            <h3>Total Users</h3>
-            <p id="total-users">0</p>
-          </div>
-          <div class="card">
-            <h3>Highest Score</h3>
-            <p id="highest-score">0</p>
-          </div>
-          <div class="card">
-            <h3>Average Score</h3>
-            <p id="average-score">0</p>
-          </div>
-        </section>
+        <section id="leaderboard-view" class="content-view">
+          <!-- Stats Cards -->
+          <section class="stats">
+            <div class="card">
+              <h3>Total Users</h3>
+              <p id="total-users">0</p>
+            </div>
+            <div class="card">
+              <h3>Highest Score</h3>
+              <p id="highest-score">0</p>
+            </div>
+            <div class="card">
+              <h3>Average Score</h3>
+              <p id="average-score">0</p>
+            </div>
+          </section>
 
-        <!-- Controls -->
-        <section class="controls">
-          <form id="fetch-users-form">
+          <!-- Controls -->
+          <section class="controls">
+            <form id="fetch-users-form">
+              <input
+                id="username-input"
+                type="text"
+                required
+                placeholder="Enter usernames (comma separated)"
+              />
+              <button class="fetch-btn">Fetch</button>
+            </form>
+
+            <select id="language-filter"></select>
+
             <input
-              id="username-input"
               type="text"
-              required
-              placeholder="Enter usernames (comma separated)"
+              id="username-search"
+              placeholder="Search username..."
             />
-            <button class="fetch-btn">Fetch</button>
-          </form>
+          </section>
 
-          <select id="language-filter"></select>
+          <div id="error-banner" role="alert"></div>
 
-          <input
-            type="text"
-            id="username-search"
-            placeholder="Search username..."
-          />
+          <!-- Table -->
+          <section class="table-container">
+            <table>
+              <thead>
+                <tr id="leaderboard-headers" class="leaderboard-header-row">
+                  <th data-sort="rank">#</th>
+                  <th data-sort="username">User</th>
+                  <th data-sort="honor">Honor</th>
+                  <th data-sort="clan">Clan</th>
+                  <th data-sort="score">Score</th>
+                  <th data-sort="leaderboardPosition">Overall Rank</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body"></tbody>
+            </table>
+          </section>
         </section>
 
-        <div id="error-banner" role="alert"></div>
-
-        <!-- Table -->
-        <section class="table-container">
-          <table>
-            <thead>
-              <tr id="leaderboard-headers" class="leaderboard-header-row">
-                <th data-sort="rank">#</th>
-                <th data-sort="username">User</th>
-                <th data-sort="honor">Honor</th>
-                <th data-sort="clan">Clan</th>
-                <th data-sort="score">Score</th>
-                <th data-sort="leaderboardPosition">Overall Rank</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-body"></tbody>
-          </table>
         </section>
       </main>
+
+      <!-- Kata side panel -->
+      <aside id="kata-drawer" class="kata-drawer" aria-hidden="true">
+        <header class="kata-drawer-header">
+          <div>
+            <p class="kata-subtitle">Completed Katas</p>
+            <h2 id="kata-user-title">—</h2>
+          </div>
+          <button id="kata-close-btn" class="kata-close-btn" aria-label="Close kata panel">✕</button>
+        </header>
+        <section id="kata-content" class="kata-content">
+          <p class="kata-placeholder">Click a user row to view their completed katas.</p>
+        </section>
+      </aside>
     </div>
+
+    <div id="kata-overlay" class="kata-overlay"></div>
 
     <script type="module" src="./src/main.js"></script>
   </body>
