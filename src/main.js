@@ -80,13 +80,26 @@ function renderLeaderboard(language, filter = "") {
 
   leaderboard.forEach((user, index) => {
     const row = document.createElement("tr");
+     if (index === 0) row.classList.add("rank-1");
+    if (index === 1) row.classList.add("rank-2");
+    if (index === 2) row.classList.add("rank-3");
+
+    const borderColor =
+      index === 0
+        ? "#facc15"
+        : index === 1
+          ? "#cbd5e1"
+          : index === 2
+            ? "#d97706"
+            : "#334155";
 
     row.innerHTML = `
       <td class="rank">${index + 1}</td>
       <td class="player-cell">
-        <span class="kyu-badge">${user.rankName}</span>
-        <span style="color:#000">●</span>
-        <span>${user.username}</span>
+         <span class="kyu-badge">${user.rankName}</span>
+        <span style="color:${borderColor}">●</span>
+        <img src="https://www.codewars.com/avatars/${user.id}" class="avatar" style="border-color:${borderColor}" alt="${user.username} avatar"/>
+ <span>${user.username}</span>
       </td>
       <td class="honor">${user.honor !== null ? user.honor : "N/A"}</td>
       <td>${user.clan || ""}</td>
@@ -97,6 +110,11 @@ function renderLeaderboard(language, filter = "") {
         ${user.leaderboardPosition !== null ? user.leaderboardPosition : ""}
       </td>
     `;
+
+    const img = row.querySelector("img");
+    img.onerror = () => {
+      img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.username)}&background=1a1a2e&color=b0b0c0&size=40`;
+    };
 
     leaderboardBody.appendChild(row);
   });
