@@ -17,8 +17,7 @@ describe("fetch reuests to API", () => {
       },
     };
 
-
-  const scope = nock("https://www.codewars.com")
+    const scope = nock("https://www.codewars.com")
       .get("/api/v1/users/testuser")
       .reply(200, mockGetUserResponse);
 
@@ -30,14 +29,13 @@ describe("fetch reuests to API", () => {
   });
 
   // Check if user not found from parameter username, it should throw an error with message "User {username} not found"
-    test("throws error on network error", async () => {
+  test("throws error on network error", async () => {
     nock("https://www.codewars.com")
       .get("/api/v1/users/testuser")
       .replyWithError("Network error");
 
     await expect(fetchUserData("testuser")).rejects.toThrow("Network error");
-  }
-  );
+  });
 
   test("throws error if user not found", async () => {
     nock("https://www.codewars.com")
@@ -45,7 +43,7 @@ describe("fetch reuests to API", () => {
       .reply(404, { message: "User not found" });
 
     await expect(fetchUserData("nonexistentuser")).rejects.toThrow(
-      "User nonexistentuser not found"
+      "User nonexistentuser not found",
     );
   });
 
@@ -56,6 +54,5 @@ describe("fetch reuests to API", () => {
 
     await expect(fetchUserData("testuser")).rejects.toThrow("Network error");
   });
-
- 
 });
+
