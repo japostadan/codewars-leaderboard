@@ -1,11 +1,11 @@
 /*
 * @param username : string
-* @returns userData : object
+* @returns fetchUserData : object
 * @throws Error if user not found
 * description: This function fetches user data from the Codewars API based on the provided username. It returns the user data as an object if the request is successful. If the user is not found, it throws an error with a message indicating that the user was not found.
 */
 
-export async function getUserData(username) {
+export async function fetchUserData(username) {
   const response = await fetch(
     `https://www.codewars.com/api/v1/users/${username}`
   );
