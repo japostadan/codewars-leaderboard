@@ -1,5 +1,7 @@
+/** @jest-environment jsdom */
+
 // ==================== getUserLanguages ====================
-import { getUserLanguages } from "../src/main.js";
+import { getUserLanguages, selectUserLanguages } from "../src/main.js";
 
 // Helper to build a minimal user object
 function makeUser({
@@ -44,3 +46,31 @@ describe("getUserLanguages", () => {
   });
 });
 
+describe("selectUserLanguages", () => {
+  it("should filter users by selected language", () => {
+    const users = [
+      makeUser({ username: "Alice", languages: { javascript: {} } }),
+      makeUser({ username: "Bob", languages: { python: {} } }),
+      makeUser({
+        username: "Charlie",
+        languages: { javascript: {}, python: {} },
+      }),
+    ];
+
+    const selectedUsers = selectUserLanguages(users, "javascript");
+    expect(selectedUsers).toEqual([
+      expect.objectContaining({ username: "Alice" }),
+      expect.objectContaining({ username: "Charlie" }),
+    ]);
+  });
+
+  it("should return all users if 'overall' is selected", () => {
+    const users = [
+      makeUser({ username: "Alice", languages: { javascript: {} } }),
+      makeUser({ username: "Bob", languages: { python: {} } }),
+    ];
+
+    const selectedUsers = selectUserLanguages(users, "overall");
+    expect(selectedUsers).toEqual(users);
+  });
+});
