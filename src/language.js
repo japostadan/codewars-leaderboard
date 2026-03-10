@@ -34,6 +34,7 @@ export function selectUserLanguages(users, selectedLanguage) {
         clan: user.clan || "",
         score,
         rankName: user.ranks.overall.name,
+        honor: user.honor || null,
         leaderboardPosition: user.leaderboardPosition || null,
       };
     })

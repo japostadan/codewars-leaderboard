@@ -2,6 +2,7 @@ import { fetchUserData } from "./api.js";
 import { getUserLanguages, selectUserLanguages } from "./language.js";
 import { renderLanguageList } from "./dropdown.js";
 import { renderStats } from "./stats.js";
+import { compareLeaderboardValues } from "./sort.js";
 
 const addUsersForm = document.getElementById("fetch-users-form");
 const usernameInput = document.getElementById("username-input");
@@ -71,15 +72,11 @@ function renderLeaderboard(language, filter = "") {
     return;
   }
 
-    leaderboard.sort((a, b) => {
-      const valA = a[currentSort.key] ?? "";
-      const valB = b[currentSort.key] ?? "";
-      if (typeof valA === "number")
-        return currentSort.asc ? valA - valB : valB - valA;
-      return currentSort.asc
-        ? String(valA).localeCompare(String(valB))
-        : String(valB).localeCompare(String(valA));
-    });
+  leaderboard.sort((a, b) => {
+    const valA = a[currentSort.key];
+    const valB = b[currentSort.key];
+    return compareLeaderboardValues(valA, valB, currentSort.asc);
+  });
 
   leaderboard.forEach((user, index) => {
     const row = document.createElement("tr");
@@ -91,11 +88,14 @@ function renderLeaderboard(language, filter = "") {
         <span style="color:#000">●</span>
         <span>${user.username}</span>
       </td>
+      <td class="honor">${user.honor !== null ? user.honor : "N/A"}</td>
       <td>${user.clan || ""}</td>
       <td>
         ${user.score}
       </td>
-      <td>${user.leaderboardPosition || "N/A"}</td>
+      <td>
+        ${user.leaderboardPosition !== null ? user.leaderboardPosition : ""}
+      </td>
     `;
 
     leaderboardBody.appendChild(row);
