@@ -1,11 +1,14 @@
 import { fetchUserData } from "./api.js";
 import { getUserLanguages, selectUserLanguages } from "./language.js";
 import { renderLanguageList } from "./dropdown.js";
+import { renderStats } from "./stats.js";
 
 const addUsersForm = document.getElementById("fetch-users-form");
 const usernameInput = document.getElementById("username-input");
 const leaderboardBody = document.getElementById("leaderboard-body");
 const errorBanner = document.getElementById("error-banner");
+const usernameSearch = document.getElementById("username-search");
+const languageFilter = document.getElementById("language-filter");
 
 let usersData = [];
 
@@ -13,6 +16,7 @@ let usersData = [];
 if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
   addUsersForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     errorBanner.textContent = "";
     leaderboardBody.innerHTML = `<tr><td colspan="6">Loading...</td></tr>`;
 
@@ -26,16 +30,27 @@ if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
     try {
       usersData = await Promise.all(usernames.map(fetchUserData));
       const userLanguages = getUserLanguages(usersData);
-      renderLanguageList(userLanguages);
-      console.log("User Languages:", userLanguages);
 
       renderLanguageList(userLanguages);
-      renderLeaderboard("overall");
+      renderLeaderboard(languageFilter.value);
     } catch (err) {
       leaderboardBody.innerHTML = "";
       errorBanner.textContent = err.message || "Something went wrong";
     }
-    console.log(usersData);
+
+    languageFilter.addEventListener("change", () => {
+      renderLeaderboard(
+        languageFilter.value,
+        usernameSearch.value.trim().toLowerCase(),
+      );
+    });
+
+    usernameSearch.addEventListener("input", () => {
+      renderLeaderboard(
+        languageFilter.value,
+        usernameSearch.value.trim().toLowerCase(),
+      );
+    });
   });
 }
 
@@ -52,7 +67,6 @@ function renderLeaderboard(language, filter = "") {
     leaderboardBody.innerHTML = `<tr><td colspan="6" class="empty-state">No data available.</td></tr>`;
     return;
   }
-
 
   leaderboard.forEach((user, index) => {
     const row = document.createElement("tr");
@@ -73,4 +87,6 @@ function renderLeaderboard(language, filter = "") {
 
     leaderboardBody.appendChild(row);
   });
+
+  renderStats(leaderboard);
 }
