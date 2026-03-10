@@ -1,4 +1,5 @@
 import { fetchUserData } from "./api.js";
+import { getUserLanguages } from "./language.js";
 
 const hasDocument = typeof document !== "undefined";
 const addUsersForm = hasDocument
@@ -45,48 +46,3 @@ if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
   });
 }
 
-// ==================== getUserLanguages ====================
-export function getUserLanguages(users) {
-  const userList = Array.isArray(users) ? users : [users];
-  const languagesSet = new Set();
-
-  userList.forEach((user) => {
-    if (user.ranks && user.ranks.languages) {
-      Object.keys(user.ranks.languages).forEach((language) =>
-        languagesSet.add(language),
-      );
-    }
-  });
-
-  console.log(languagesSet);
-  return ["overall", ...Array.from(languagesSet)];
-}
-
-// ==================== selectUserLanguages ====================
-export function selectUserLanguages(users, language) {
-  return users.filter((user) => {
-    if (language === "overall") return true;
-    return user.ranks.languages && user.ranks.languages[language];
-  });
-}
-
-// ==================== renderLanguageList ====================
-export function renderLanguageList(languages) {
-  const select = document.getElementById("language-filter");
-  select.innerHTML = "";
-
-  const overallOption = document.createElement("option");
-  overallOption.value = "overall";
-  overallOption.textContent = "Overall";
-  select.appendChild(overallOption);
-
-  languages
-    .filter((l) => l !== "overall")
-    .sort((a, b) => a.localeCompare(b))
-    .forEach((lang) => {
-      const opt = document.createElement("option");
-      opt.value = lang;
-      opt.textContent = lang;
-      select.appendChild(opt);
-    });
-}
