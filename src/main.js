@@ -3,6 +3,7 @@ import { getUserLanguages, selectUserLanguages } from "./language.js";
 import { renderLanguageList } from "./dropdown.js";
 import { renderStats } from "./stats.js";
 import { compareLeaderboardValues } from "./sort.js";
+import { saveCache, loadCache } from "./cache.js";
 
 const addUsersForm = document.getElementById("fetch-users-form");
 const usernameInput = document.getElementById("username-input");
@@ -11,9 +12,24 @@ const errorBanner = document.getElementById("error-banner");
 const usernameSearch = document.getElementById("username-search");
 const languageFilter = document.getElementById("language-filter");
 const leaderboardTitle = document.getElementById("leaderboard-headers");
+const themeToggle = document.getElementById("theme-toggle");
 
 let usersData = [];
 let currentSort = { key: "score", asc: false };
+
+// Load from cache on startup
+document.addEventListener("DOMContentLoaded", () => {
+  const cached = loadCache();
+  if (cached) {
+    usersData = cached;
+    const userLanguages = getUserLanguages(usersData);
+    renderLanguageList(userLanguages);
+
+    renderLeaderboard("overall");
+  }
+  const savedTheme = localStorage.getItem("cw-theme");
+  if (savedTheme === "light") document.body.classList.add("light");
+});
 
 // ==================== Fetch Users & Initialize ====================
 if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
@@ -32,6 +48,7 @@ if (addUsersForm && usernameInput && errorBanner && leaderboardBody) {
 
     try {
       usersData = await Promise.all(usernames.map(fetchUserData));
+      saveCache(usersData);
       const userLanguages = getUserLanguages(usersData);
 
       renderLanguageList(userLanguages);
@@ -154,4 +171,13 @@ leaderboardTitle.querySelectorAll("th").forEach((header) => {
 
     sortIcon.textContent = currentSort.asc ? "▲" : "▼";
   });
+});
+
+// ==================== Theme Toggle ====================
+themeToggle.addEventListener("click", () => {
+  themeToggle.textContent = document.body.classList.toggle("light")
+    ? "🌑️"
+    : "☀️";
+  const isLight = document.body.classList.toggle("dark");
+  localStorage.setItem("cw-theme", isLight ? "light" : "dark");
 });
