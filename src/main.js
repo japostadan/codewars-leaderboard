@@ -22,10 +22,28 @@ addUsersForm.addEventListener("submit", async (e) => {
 
   try {
     usersData = await Promise.all(usernames.map(fetchUserData));
-
+    const userLanguages = getUserLanguages(usersData);
+    console.log("User Languages:", userLanguages);
   } catch (err) {
     leaderboardBody.innerHTML = "";
     errorBanner.textContent = err.message || "Something went wrong";
   }
   console.log(usersData);
 });
+
+// ==================== getUserLanguages ====================
+export function getUserLanguages(users) {
+  const languagesSet = new Set();
+
+  users.forEach((user) => {
+    if (user.ranks && user.ranks.languages) {
+      Object.keys(user.ranks.languages).forEach((language) =>
+        languagesSet.add(language),
+      );
+    }
+  });
+
+  console.log(languagesSet);
+  return ["overall", ...Array.from(languagesSet)];
+}
+
